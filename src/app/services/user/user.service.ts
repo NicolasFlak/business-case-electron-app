@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {environment} from "../../../environments/environment.development";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AuthService} from "../auth/auth.service";
-import {User, UserHttp} from "../../models/user.models";
+import {User, UserForm, UserHttp} from "../../models/user.models";
 import {firstValueFrom, map} from "rxjs";
 
 @Injectable({
@@ -55,6 +55,28 @@ export class UserService {
       )
 
     return firstValueFrom(obsHttp$) // toPromise: on transforme l'observable en promesse
+  }
+
+  add(userToAdd: UserForm): Promise<any> {
+    const token = this.authService.token as string
+    const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
+    const options = { headers }
+
+    const obsHttp$ = this.http
+      .post(`${this.fullBaseUrlApi}/`, userToAdd, options)
+
+    return firstValueFrom(obsHttp$) // toPromise
+  }
+
+  edit(id: number, userEdited: UserForm): Promise<any> {
+    const token = this.authService.token as string
+    const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
+    const options = { headers }
+
+    const obsHttp$ = this.http
+      .put(`${this.fullBaseUrlApi}/${id}`, userEdited, options)
+
+    return firstValueFrom(obsHttp$) // toPromise
   }
 
   deleteById(id: number): Promise<any> {

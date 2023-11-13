@@ -22,6 +22,15 @@ export interface User { // donnée qu'on transmet
   // commands: { "id": 0, "remarque": "string", "payment": true} []
 }
 
+export interface UserForm {
+  lastname: string,
+  firstname: string,
+  username: string,
+  email: string,
+  password: string,
+  roles: { id: number }[]
+}
+
 export namespace User {
 
   export function mapperUserHttpToUser(userHttp: UserHttp): User {

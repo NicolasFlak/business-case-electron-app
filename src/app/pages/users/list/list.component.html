@@ -73,6 +73,29 @@
   <div class="modal-body">
     <form *ngIf="userForm" [formGroup]="userForm">
 
+      <div class="form-floating mt-2">
+        <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" formControlName="email" required email>
+        <label for="floatingEmail">Email address</label>
+        <app-form-errors [group]="userForm" controlName="email" controlLabel="Email"></app-form-errors>
+      </div>
+
+      <div class="form-floating mt-2">
+        <input type="text" class="form-control" id="floatingFirstname" placeholder="Firstname" formControlName="firstname" required>
+        <label for="floatingFirstname">Firstname</label>
+        <app-form-errors [group]="userForm" controlName="firstname" controlLabel="Firstname"></app-form-errors>
+      </div>
+
+      <div class="form-floating mt-2">
+        <input type="text" class="form-control" id="floatingLastname" placeholder="Lastname" formControlName="lastname" required>
+        <label for="floatingLastname">Lastname</label>
+        <app-form-errors [group]="userForm" controlName="lastname" controlLabel="Lastname"></app-form-errors>
+      </div>
+      <div class="form-floating mt-2">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" formControlName="password" required>
+        <label for="floatingPassword">Password</label>
+        <app-form-errors [group]="userForm" controlName="password" controlLabel="Password"></app-form-errors>
+      </div>
+
     </form>
   </div>
   <div class="modal-footer">

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../../services/user/user.service";
-import {User} from "../../../models/user.models";
+import {User, UserForm} from "../../../models/user.models";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-list',
@@ -18,7 +18,7 @@ export class ListComponent implements OnInit {
   selectedUserForEdition?: User
   userForm?: FormGroup
 
-  constructor(private userService: UserService, private modalService: NgbModal) {
+  constructor(private userService: UserService, private modalService: NgbModal, private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -26,23 +26,61 @@ export class ListComponent implements OnInit {
   }
 
   onClickAddUser(modalUserForm: any): void {
+    this.initUserForm()
+
     const modal = this.modalService.open(modalUserForm)
 
     modal.result
       .then(() => {
+        const userForm: UserForm = {
+          // Technique 1 fastidieuse
+          // email: this.userForm?.value.email,
+          // firstname: this.userForm?.value.firstname,
+          // lastname: this.userForm?.value.lastname,
+          // password: this.userForm?.value.password,
+          // country: 'France',
+          // roles: [{ id: 1}]
+          // }
+          // OU
 
+          // Technique 2 avec destructuration
+          ...this.userForm?.value, // on prend les values du userForm et on récupère les values correspondantes du user. Les clés du userForm doivent avoir le même nom que les attributs du User
+          username: 'monUsername',
+          roles: [ {id: 1} ]
+        }
+        console.log(userForm)
+
+        this.userService.add(userForm)
+          .then( () => {
+            this.users$ = this.userService.getAll()
+          })
       })
       .catch(() => {
       })
   }
 
   onClickEditUser(modalUserForm: any, userToEdit: User): void {
+    this.initUserForm(userToEdit)
     this.selectedUserForEdition = userToEdit
 
     const modal = this.modalService.open(modalUserForm)
 
     modal.result
       .then(() => {
+
+        const userForm: UserForm = {
+          ...this.userForm?.value,
+          username: 'monUsername',
+          roles: [ {id: 1} ],
+          commands: [ ]
+        }
+        console.log(userForm)
+
+        this.userService
+          .edit(userToEdit.id, userForm)
+          .then( () => {
+            this.users$ = this.userService.getAll()
+          })
 
       })
       .catch(() => {
@@ -56,7 +94,7 @@ export class ListComponent implements OnInit {
 
     // Sinon, on soumet le form
     if(this.userForm?.valid){
-      modal.close
+      modal.close()
     }
   }
 
@@ -79,6 +117,19 @@ export class ListComponent implements OnInit {
 
   }
 
-
+  private initUserForm(userToEdit? : User): void {
+    // un group est un ensemble de controles
+    // un controle est lié à un champs html (input par exemple)
+    // un controle possède un tableau de 2 index
+    // indox 0 : la valeur par défaut
+    // index 1 : les validators (array)
+    // chaque variable(email, firstname, etc...) est reliée à un formControlName dans le html
+     this.userForm = this.fb.group( {
+       email: [ userToEdit ? userToEdit.email : undefined, [Validators.required, Validators.email, Validators.minLength(6)] ],
+       firstname: [ userToEdit ? userToEdit.firstname : undefined, [Validators.required] ],
+       lastname: [ userToEdit ? userToEdit.lastname : undefined, [Validators.required] ],
+       password: [ undefined, [Validators.required, Validators.minLength(6)] ] // Si on veut rajouter un pattern pour le mot de passe (1 lettre, 1 majuscule, 1 chiffre et 1 caractère spécial minimum) : rajouter Validators.pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':",.<>\/?]).{8,}$/)
+     } )
+  }
 
 }

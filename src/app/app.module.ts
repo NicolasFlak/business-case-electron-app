@@ -13,6 +13,7 @@ import { SigninComponent } from './pages/auth/signin/signin.component';
 import { ErrorComponent } from './pages/error/error.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
+import {FormErrorsComponent} from "./components/form-errors/form-errors.component";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {HttpClientModule} from "@angular/common/http";
     ListComponent,
     DetailsComponent,
     SigninComponent,
-    ErrorComponent
+    ErrorComponent,
+    FormErrorsComponent
   ],
   imports: [
     BrowserModule,
