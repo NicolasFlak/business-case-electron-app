@@ -12,8 +12,9 @@ import { DetailsComponent } from './pages/users/details/details.component';
 import { SigninComponent } from './pages/auth/signin/signin.component';
 import { ErrorComponent } from './pages/error/error.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormErrorsComponent} from "./components/form-errors/form-errors.component";
+import {AuthInterceptor} from "./interceptors/auth/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,13 @@ import {FormErrorsComponent} from "./components/form-errors/form-errors.componen
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true // permet d'avoir plusieurs intercepteurs
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

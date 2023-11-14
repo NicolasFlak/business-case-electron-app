@@ -3,6 +3,7 @@ import {UserService} from "../../../services/user/user.service";
 import {User, UserForm} from "../../../models/user.models";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+// import Country = User.Country;
 
 @Component({
   selector: 'app-list',
@@ -10,6 +11,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+
+  // Pour pouvoir avoir accès à Country dans le html:
+  // countries = Country
 
   //On récupère la promesse du Userservice
   users$?: Promise<User[]>
@@ -80,18 +84,18 @@ export class ListComponent implements OnInit {
           .edit(userToEdit.id, userForm)
           .then( () => {
             this.users$ = this.userService.getAll()
+            this.selectedUserForEdition = undefined
           })
 
       })
       .catch(() => {
+        this.selectedUserForEdition = undefined
       })
   }
 
   onSubmitUserForm(modal: any) {
     // On checke si le form est valide
-
     // Si oui, on ne fait rien
-
     // Sinon, on soumet le form
     if(this.userForm?.valid){
       modal.close()
@@ -119,16 +123,17 @@ export class ListComponent implements OnInit {
 
   private initUserForm(userToEdit? : User): void {
     // un group est un ensemble de controles
-    // un controle est lié à un champs html (input par exemple)
-    // un controle possède un tableau de 2 index
-    // indox 0 : la valeur par défaut
-    // index 1 : les validators (array)
+    // un control est lié à un champs html (input par exemple)
+    // un control possède un tableau de 2 index
+    // - index 0 : la valeur par défaut
+    // - index 1 : les validators (array)
     // chaque variable(email, firstname, etc...) est reliée à un formControlName dans le html
      this.userForm = this.fb.group( {
        email: [ userToEdit ? userToEdit.email : undefined, [Validators.required, Validators.email, Validators.minLength(6)] ],
        firstname: [ userToEdit ? userToEdit.firstname : undefined, [Validators.required] ],
        lastname: [ userToEdit ? userToEdit.lastname : undefined, [Validators.required] ],
-       password: [ undefined, [Validators.required, Validators.minLength(6)] ] // Si on veut rajouter un pattern pour le mot de passe (1 lettre, 1 majuscule, 1 chiffre et 1 caractère spécial minimum) : rajouter Validators.pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':",.<>\/?]).{8,}$/)
+       password: [ undefined, [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':",.<>\/?]).{8,}$/) ] ], // Si on veut rajouter un pattern pour le mot de passe (1 lettre, 1 majuscule, 1 chiffre et 1 caractère spécial minimum) : rajouter Validators.pattern(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':",.<>\/?]).{8,}$/)
+       // country: [userToEdit ? userToEdit.country : Country.FRANCE, [Validators.required] ]
      } )
   }
 

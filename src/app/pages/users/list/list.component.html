@@ -90,11 +90,21 @@
         <label for="floatingLastname">Lastname</label>
         <app-form-errors [group]="userForm" controlName="lastname" controlLabel="Lastname"></app-form-errors>
       </div>
+
       <div class="form-floating mt-2">
         <input type="password" class="form-control" id="floatingPassword" placeholder="Password" formControlName="password" required>
         <label for="floatingPassword">Password</label>
         <app-form-errors [group]="userForm" controlName="password" controlLabel="Password"></app-form-errors>
       </div>
+
+<!--      <div class="form-floating mt-2">-->
+<!--        <select class="form-control" id="floatingCountry" formControlName="country">-->
+<!--          <option *ngFor="let country of countries | keyvalue"-->
+<!--          [value]="country.value">{{country.key | titlecase }}</option>-->    <!-- "| titlecase" pour afficher le nom avec une majuscule suivie de minuscules -->
+<!--        </select>-->
+<!--        <label for="floatingCountry">Country</label>-->
+<!--        <app-form-errors [group]="userForm" controlName="country" controlLabel="Country"></app-form-errors>-->
+<!--      </div>-->
 
     </form>
   </div>

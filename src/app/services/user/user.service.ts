@@ -22,16 +22,16 @@ export class UserService {
   }
 
   getAll(): Promise<User[]> {
-    const token = this.authService.token as string
-
-    const headers = new HttpHeaders( {
-      'Authorization': `Bearer ${token}`
-    })
-
-    const options = { headers }
+    // const token = this.authService.token as string
+    //
+    // const headers = new HttpHeaders( {
+    //   'Authorization': `Bearer ${token}`
+    // })
+    //
+    // const options = { headers }
 
     const obsHttp$ = this.http
-      .get<UserHttp[]>(`${this.fullBaseUrlApi}/`, options)
+      .get<UserHttp[]>(`${this.fullBaseUrlApi}/`) //, options
       .pipe( // transforme les données Java en données front
         map((usersHttp: UserHttp[]) => usersHttp.map((userHttp: UserHttp) => User.mapperUserHttpToUser(userHttp)))
       )
@@ -40,16 +40,16 @@ export class UserService {
   }
 
   getById(id: number): Promise<User> {
-    const token = this.authService.token as string
-
-    const headers = new HttpHeaders( {
-      'Authorization': `Bearer ${token}`
-    })
-
-    const options = { headers }
+    // const token = this.authService.token as string
+    //
+    // const headers = new HttpHeaders( {
+    //   'Authorization': `Bearer ${token}`
+    // })
+    //
+    // const options = { headers }
 
     const obsHttp$ = this.http
-      .get<UserHttp>(`${this.fullBaseUrlApi}/${id}`, options) // c'est un flux
+      .get<UserHttp>(`${this.fullBaseUrlApi}/${id}`) // c'est un flux //, options
       .pipe( // transforme les données Java en données front // c'est un observable, mais comme il faut subscribe et unsubscribe, on préfère le transformer en promise juste en-dessous avec firstValueFrom()
         map((userHttp: UserHttp) => User.mapperUserHttpToUser(userHttp))
       )
@@ -58,38 +58,38 @@ export class UserService {
   }
 
   add(userToAdd: UserForm): Promise<any> {
-    const token = this.authService.token as string
-    const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
-    const options = { headers }
+    // const token = this.authService.token as string
+    // const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
+    // const options = { headers }
 
     const obsHttp$ = this.http
-      .post(`${this.fullBaseUrlApi}/`, userToAdd, options)
+      .post(`${this.fullBaseUrlApi}/`, userToAdd) //, options
 
     return firstValueFrom(obsHttp$) // toPromise
   }
 
   edit(id: number, userEdited: UserForm): Promise<any> {
-    const token = this.authService.token as string
-    const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
-    const options = { headers }
+    // const token = this.authService.token as string
+    // const headers = new HttpHeaders( {'Authorization': `Bearer ${token}`})
+    // const options = { headers }
 
     const obsHttp$ = this.http
-      .put(`${this.fullBaseUrlApi}/${id}`, userEdited, options)
+      .put(`${this.fullBaseUrlApi}/${id}`, userEdited) //, options
 
     return firstValueFrom(obsHttp$) // toPromise
   }
 
   deleteById(id: number): Promise<any> {
-    const token = this.authService.token as string
-
-    const headers = new HttpHeaders( {
-      'Authorization': `Bearer ${token}`
-    })
-
-    const options = { headers }
+    // const token = this.authService.token as string
+    //
+    // const headers = new HttpHeaders( {
+    //   'Authorization': `Bearer ${token}`
+    // })
+    //
+    // const options = { headers }
 
     const obsHttp$ = this.http
-      .delete(`${this.fullBaseUrlApi}/${id}`, options)
+      .delete(`${this.fullBaseUrlApi}/${id}`)
 
     return firstValueFrom(obsHttp$) // toPromise
   }
