@@ -1,12 +1,15 @@
 {
   "name": "business-case-electron-app",
+  "main": "app/main.js",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start-electron": "electron .",
+    "build-electron-for-prod": "ng build && electron-packager ."
   },
   "private": true,
   "dependencies": {
@@ -37,6 +40,7 @@
     "@angular/localize": "^16.2.0",
     "@types/jasmine": "~4.3.0",
     "electron": "^27.0.4",
+    "electron-packager": "^17.1.2",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
