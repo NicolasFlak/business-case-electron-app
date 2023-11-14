@@ -3,6 +3,7 @@ import {UserService} from "../../../services/user/user.service";
 import {User, UserForm} from "../../../models/user.models";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {BehaviorSubject, combineLatest, debounceTime, map, Observable} from "rxjs";
 // import Country = User.Country;
 
 @Component({
@@ -16,17 +17,28 @@ export class ListComponent implements OnInit {
   // countries = Country
 
   //On récupère la promesse du Userservice
-  users$?: Promise<User[]>
+  users$?: Observable<User[]>
   selectedUserDeleteConfirmation?: User
   showDeleteSuccessToast: boolean = false
   selectedUserForEdition?: User
   userForm?: FormGroup
 
+  private searchFilterText$: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined)
+
   constructor(private userService: UserService, private modalService: NgbModal, private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
-    this.users$ = this.userService.getAll()
+    // this.users$ = this.userService.getAll()
+    this.users$ = this.getUsersFiltered()
+  }
+
+  onInputSearchFilter(evt: any): void {
+    const searchText= evt.target.value
+    this.searchFilterText$.next(searchText)
+
+    console.log(evt)
+    // return
   }
 
   onClickAddUser(modalUserForm: any): void {
@@ -56,7 +68,8 @@ export class ListComponent implements OnInit {
 
         this.userService.add(userForm)
           .then( () => {
-            this.users$ = this.userService.getAll()
+            // this.users$ = this.userService.getAll()
+            this.users$ = this.getUsersFiltered()
           })
       })
       .catch(() => {
@@ -83,7 +96,8 @@ export class ListComponent implements OnInit {
         this.userService
           .edit(userToEdit.id, userForm)
           .then( () => {
-            this.users$ = this.userService.getAll()
+            // this.users$ = this.userService.getAll()
+            this.users$ = this.getUsersFiltered()
             this.selectedUserForEdition = undefined
           })
 
@@ -112,7 +126,8 @@ export class ListComponent implements OnInit {
         this.userService
           .deleteById(user.id)
           .then(() => {
-            this.users$ = this.userService.getAll()
+            // this.users$ = this.userService.getAll()
+            this.users$ = this.getUsersFiltered()
           })
         this.showDeleteSuccessToast = true
       })
@@ -136,5 +151,23 @@ export class ListComponent implements OnInit {
        // country: [userToEdit ? userToEdit.country : Country.FRANCE, [Validators.required] ]
      } )
   }
+
+  private getUsersFiltered(): Observable<User[]> {
+    return combineLatest([
+      this.userService.getAll(),
+      this.searchFilterText$
+    ])
+      .pipe(
+        debounceTime(500), //timer pendant la saisie pour ne pas envoyer de requête à chaque lettre tapée
+        map(([users, searchText]) => {
+          if(searchText) {
+            return users.filter(u => u.firstname.toLowerCase().includes(searchText.toLowerCase()) || u.lastname.toLowerCase().includes(searchText.toLowerCase()))
+          }
+          return users
+        })
+      )
+  }
+
+
 
 }

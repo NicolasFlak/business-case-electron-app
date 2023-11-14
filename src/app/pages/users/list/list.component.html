@@ -1,8 +1,15 @@
-<div class="mt-5">
+<div class="mt-2">
 
-  <div class="d-flex justify-content-end">
+  <div class="d-flex mb-2 justify-content-between">
+    <input
+      type="text"
+      placeholder="Filtrer un utilisateur par nom ou prénom"
+      class="input-group-text text-start"
+      size="100"
+      (input)="onInputSearchFilter($event)"
+    >
     <button
-      class="btn btn-success mb-2"
+      class="btn btn-success"
       (click)="onClickAddUser(modalUserForm)"
     >
       Nouvel Utilisateur

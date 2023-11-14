@@ -18,9 +18,9 @@ export class SigninComponent {
 
   onSubmitSignIn(form: NgForm){
     if (form.valid) {
-      const { username, password, keepConnexion } = form.value
+      const { username, password, keepConnection } = form.value
       this.authService
-        .signIn(username, password, keepConnexion)
+        .signIn(username, password, keepConnection)
         .then(() => {
           this.router.navigateByUrl('/users')
         })
